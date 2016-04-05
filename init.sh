@@ -10,7 +10,7 @@ cd udis86
 mkdir out
 
 CONFIGURE_OPTS=--prefix=`pwd`/out
-if [ "$PYTHON" -ne "" ]; then
+if [ " $PYTHON" -ne " " ]; then
 	CONFIGURE_OPTS+=" --with-python=$PYTHON"
 fi
 ./configure $CONFIGURE_OPTS
