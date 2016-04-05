@@ -1,4 +1,4 @@
-UDIS86DIR =	/home/liron_b/self-compiled/udis86-1.7.2/out
+UDIS86DIR =	./udis86/out
 
 NAME	=	a.exe
 
