@@ -5,17 +5,17 @@ template<typename T>
 class	Version
 {
 public:
-  T&	major;
-  T&	minor;
+  T&	_major;
+  T&	_minor;
 
   Version(T& major, T& minor)
-    : major(major), minor(minor)
+    : _major(major), _minor(minor)
   {}
 
   float	getFloat() const
   {
-    float	major = this->major;
-    float	minor = this->minor;
+    float	major = this->_major;
+    float	minor = this->_minor;
 
     while (minor > 1)
       minor /= 10;

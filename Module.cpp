@@ -9,7 +9,12 @@
 #include	"RelocTable.hpp"
 #include	"Text.hpp"
 
-#define	FILE_MAP_EXECUTE	0x20 // Because MinGW forgot to define it
+#ifndef		FILE_MAP_EXECUTE
+# define	FILE_MAP_EXECUTE	0x20
+#endif		/* !FILE_MAP_EXECUTE */
+#ifndef		IMAGE_DIRECTORY_ENTRY_COPYRIGHT
+# define	IMAGE_DIRECTORY_ENTRY_COPYRIGHT	7
+#endif		/* !IMAGE_DIRECTORY_ENTRY_COPYRIGHT */
 
 static const std::map<int, const char*>	flagsMap =
   {

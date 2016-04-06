@@ -16,7 +16,7 @@ fi
 ./configure $CONFIGURE_OPTS || exit 1
 make || exit 1
 make install
-cp out/bin/libudis86-0.dll ..
+cp out/bin/*.dll ..
 
 cd ..
 make
