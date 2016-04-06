@@ -3,6 +3,7 @@
 #endif /* __STRICT_ANSI__ */
 #include	"Module.hpp"
 #include	"ResourceTable.hpp"
+#include	"swprintf.hpp"
 
 ResourceTable::ResourceTable(Module& module, IMAGE_SECTION_HEADER& header)
   : Section(module, header)
@@ -28,7 +29,7 @@ void	ResourceTable::addEntry(const IMAGE_RESOURCE_DIRECTORY_ENTRY& entry, LPCWST
       wcsncat(name, nameStruct->NameString, nameStruct->Length);
     }
   else
-    swprintf(name, MAX_PATH, L"%s/#%d", dirName, entry.Name);
+    SWPRINTF(name, MAX_PATH, L"%s/#%d", dirName, entry.Name);
   if (entry.OffsetToData & 0x80000000)
     this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)(this->fp() + (entry.OffsetToData & 0x7FFFFFFF)), name);
   else
