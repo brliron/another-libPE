@@ -55,8 +55,9 @@ public:
   Module();
   ~Module();
 
-  bool	load(LPCTSTR filename);
-  BYTE*	getData()
+  static Module*	alloc(LPCTSTR filename);
+  bool			load(LPCTSTR filename);
+  BYTE*			getData()
   {
     return this->data;
   }

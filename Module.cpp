@@ -106,10 +106,26 @@ Module::~Module()
     }
 }
 
+Module*		Module::alloc(LPCTSTR filename)
+{
+  Module*	module = new Module;
+  if (module->load(filename) == false)
+    {
+      delete module;
+      return nullptr;
+    }
+  return module;
+}
+
 bool	Module::load(LPCTSTR filename)
 {
   this->hFile = CreateFile(filename, FILE_GENERIC_READ/* | FILE_GENERIC_WRITE | FILE_GENERIC_EXECUTE*/, FILE_SHARE_READ, nullptr, OPEN_EXISTING,
 			   FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (this->hFile == INVALID_HANDLE_VALUE)
+    {
+      printf("CreateFile failed.\n");
+      return false;
+    }
   this->hFileMapping = CreateFileMapping(this->hFile, nullptr, PAGE_WRITECOPY/*PAGE_EXECUTE_WRITECOPY*/, 0, 0, nullptr);
   this->data = (BYTE*)MapViewOfFile(this->hFileMapping, FILE_MAP_COPY/*FILE_MAP_EXECUTE*/, 0, 0, 0);
 
