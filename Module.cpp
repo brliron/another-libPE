@@ -91,7 +91,7 @@ std::string	Module::_printFlags(unsigned int flags, const std::map<int, const ch
 
 
 Module::Module()
-  : hFile(nullptr), hFileMapping(nullptr), data(nullptr)
+  : AddrAwareObject(this), hFile(nullptr), hFileMapping(nullptr), data(nullptr)
 {}
 
 Module::~Module()
@@ -115,7 +115,7 @@ bool	Module::load(LPCTSTR filename)
 
   IMAGE_DOS_HEADER*	dosHeader;
   dosHeader = (IMAGE_DOS_HEADER*)this->data;
-  header = rvaToFp<IMAGE_NT_HEADERS*>(dosHeader->e_lfanew);
+  header = addr<Addr::FilePointer, IMAGE_NT_HEADERS*>(dosHeader->e_lfanew);
 
   if (memcmp(&header->Signature, "PE\0\0", 4) != 0)
     {
@@ -176,6 +176,7 @@ Version<BYTE>	Module::linkerVersion()
   return Version<BYTE>(this->opHeader->MajorLinkerVersion, this->opHeader->MinorLinkerVersion);
 }
 
+/*
 DWORD	Module::getEntryPointRva() const
 {
   return this->opHeader->AddressOfEntryPoint;
@@ -185,6 +186,7 @@ BYTE*	Module::getEntryPointFp()
 {
   return rvaToFp<>(this->opHeader->AddressOfEntryPoint); // TODO: find in which section is that thing.
 }
+*/
 
 void	Module::setEntryPointRva(DWORD offset)
 {

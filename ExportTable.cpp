@@ -20,20 +20,20 @@ const std::vector<ExportTable::Entry>&	ExportTable::get()
 
   const IMAGE_EXPORT_DIRECTORY*	directory;
 
-  directory = (const IMAGE_EXPORT_DIRECTORY*)this->fp();
+  directory = (const IMAGE_EXPORT_DIRECTORY*)this->data();
   for (unsigned int i = 0; i < directory->NumberOfFunctions; i++)
     {
       DWORD		offset;
       const char*	name;
       DWORD		ordinal;
 
-      offset = rvaToFp<DWORD*>(directory->AddressOfFunctions)[i];
+      offset = addr<Addr::FilePointer, DWORD*>(directory->AddressOfFunctions)[i];
       if (i < directory->NumberOfNames)
-	name = rvaToFp<const char*>(rvaToFp<DWORD*>(directory->AddressOfNames)[i]);
+	name = addr<Addr::FilePointer, const char*>(addr<Addr::FilePointer, DWORD*>(directory->AddressOfNames)[i]);
       else
 	name = NULL;
-      ordinal = directory->Base + rvaToFp<WORD*>(directory->AddressOfNameOrdinals)[i];
-      this->table.push_back(ExportTable::Entry(rvaToFp(offset), offset, name, ordinal));
+      ordinal = directory->Base + addr<Addr::FilePointer, WORD*>(directory->AddressOfNameOrdinals)[i];
+      this->table.push_back(ExportTable::Entry(addr<Addr::FilePointer>(offset), offset, name, ordinal));
     }
   return this->table;
 }

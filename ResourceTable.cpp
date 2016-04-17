@@ -23,7 +23,7 @@ void	ResourceTable::addEntry(const IMAGE_RESOURCE_DIRECTORY_ENTRY& entry, LPCWST
 
   if (entry.Name & 0x80000000)
     {
-      const IMAGE_RESOURCE_DIR_STRING_U* nameStruct = (const IMAGE_RESOURCE_DIR_STRING_U*)(this->fp() + (entry.Name & 0x7FFFFFFF));
+      const IMAGE_RESOURCE_DIR_STRING_U* nameStruct = (const IMAGE_RESOURCE_DIR_STRING_U*)(this->data() + (entry.Name & 0x7FFFFFFF));
       wcscpy(name, dirName);
       wcscat(name, L"/");
       wcsncat(name, nameStruct->NameString, nameStruct->Length);
@@ -31,11 +31,11 @@ void	ResourceTable::addEntry(const IMAGE_RESOURCE_DIRECTORY_ENTRY& entry, LPCWST
   else
     SWPRINTF(name, MAX_PATH, L"%s/#%d", dirName, entry.Name);
   if (entry.OffsetToData & 0x80000000)
-    this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)(this->fp() + (entry.OffsetToData & 0x7FFFFFFF)), name);
+    this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)(this->data() + (entry.OffsetToData & 0x7FFFFFFF)), name);
   else
     {
-      const IMAGE_RESOURCE_DATA_ENTRY*	resEntry = (const IMAGE_RESOURCE_DATA_ENTRY*)(this->fp() + entry.OffsetToData);
-      this->table.push_back(Entry(name, entry.OffsetToData, rvaToFp<>(resEntry->OffsetToData), resEntry->Size, resEntry->CodePage, resEntry->Reserved));
+      const IMAGE_RESOURCE_DATA_ENTRY*	resEntry = (const IMAGE_RESOURCE_DATA_ENTRY*)(this->data() + entry.OffsetToData);
+      this->table.push_back(Entry(name, entry.OffsetToData, addr<Addr::FilePointer>(resEntry->OffsetToData), resEntry->Size, resEntry->CodePage, resEntry->Reserved));
     }
 }
 
@@ -53,6 +53,6 @@ const std::vector<ResourceTable::Entry>&	ResourceTable::get()
   if (this->table.size() != 0)
     return this->table;
 
-  this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)this->fp(), L"");
+  this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)this->data(), L"");
   return this->table;
 }

@@ -6,7 +6,7 @@
 # include	"Module.hpp"
 # include	"Flags.hpp"
 
-class	Section
+class	Section : public AddrAwareObject
 {
 protected:
   Module&		module;
@@ -22,11 +22,7 @@ public:
   // Some tables are a part of a section, and are allocated as a complete Section class (the import address table, for example). In that case, use this function to tell which is the section containing this one.
   void			setParentSection(const Section* parent);
 
-  template<typename T = BYTE*>
-  T	rvaToFp(DWORD offset)
-  {
-    return this->module.rvaToFp<T>(offset - this->header.VirtualAddress + this->header.PointerToRawData);
-  }
+  DWORD	getPointerToRawData() const { return this->header.PointerToRawData; }
 
   const std::string&	getName() const;
   void			setName(const std::string& name);
@@ -34,7 +30,7 @@ public:
   DWORD			getLoadRva() const;
   void			setLoadRva(DWORD rva);
   DWORD			getRoundedSize() const; // TODO: explain the difference with getSize.
-  BYTE*			fp();
+  BYTE*			data();
   // PointerToRelocations, PointerToLinenumbers, NumberOfRelocations and NumberOfLinenumbers are useless for exe files.
   enum	SectionFlags
     {

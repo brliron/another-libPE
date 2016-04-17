@@ -46,6 +46,6 @@ void	Module::load()
 
   // Run entry point
   void	(*entry)();
-  entry = (void(*)())(base + (DWORD)this->getEntryPointRva());
+  entry = (void(*)())(base + this->getEntryPoint<Addr::RVA, DWORD>());
   entry();
 }

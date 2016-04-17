@@ -36,7 +36,7 @@ static const std::map<int, const char*>	flagsMap =
 
 
 Section::Section(Module& module, IMAGE_SECTION_HEADER& header)
-  : module(module), header(header)
+  : AddrAwareObject(&module, this), module(module), header(header)
 {
   char	name[9];
 
@@ -46,7 +46,7 @@ Section::Section(Module& module, IMAGE_SECTION_HEADER& header)
 }
 
 Section::Section(const Section& src)
-  : module(src.module), header(src.header), name(src.name)
+  : AddrAwareObject(&module, this), module(src.module), header(src.header), name(src.name)
 {}
 
 Section::~Section()
@@ -89,9 +89,9 @@ DWORD	Section::getRoundedSize() const
   return this->header.SizeOfRawData;
 }
 
-BYTE*	Section::fp()
+BYTE*	Section::data()
 {
-  return this->module.rvaToFp<>(this->header.PointerToRawData);
+  return this->addr<Addr::FilePointer>(this->getLoadRva());
 }
 
 Flags<DWORD>	Section::flags()
@@ -106,13 +106,14 @@ void	Section::load()
   DWORD	protection;
   DWORD	dummy;
 
-  base = (BYTE*)VirtualAlloc((BYTE*)this->module.getLoadVa() + (DWORD)this->getLoadRva(), this->getSize(), MEM_COMMIT, PAGE_READWRITE);
+  // base = (BYTE*)VirtualAlloc((BYTE*)this->module.getLoadVa() + (DWORD)this->getLoadRva(), this->getSize(), MEM_COMMIT, PAGE_READWRITE);
+  base = (BYTE*)VirtualAlloc(this->addr<Addr::Load>(0), this->getSize(), MEM_COMMIT, PAGE_READWRITE);
   if (base == NULL)
     {
       std::cerr << "Alloc of section " << this->getName() << " (" << std::hex << this->getLoadRva() << ") failed; error " << GetLastError() << std::endl;
       return ;
     }
-  CopyMemory(base, this->fp(), this->getSize());
+  CopyMemory(base, this->data(), this->getSize());
 
   protection = 0;
   if (this->flags() & MEM_WRITE)

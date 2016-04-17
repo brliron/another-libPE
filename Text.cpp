@@ -22,7 +22,7 @@ const std::vector<std::string>&	Text::disassemble()
     ud_set_mode(&ud, 32);
   else if (this->module.getProcessorMode() == Module::amd64)
     ud_set_mode(&ud, 64);
-  ud_set_input_buffer(&ud, this->fp(), this->getSize());
+  ud_set_input_buffer(&ud, this->data(), this->getSize());
   ud_set_syntax(&ud, UD_SYN_INTEL);
 
   while (ud_disassemble(&ud))

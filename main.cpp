@@ -17,24 +17,24 @@ int	main(int ac, char** av)
     }
   module.load(av[1]);
 
-  std::cout << "CPU mode "		<< module.getProcessorMode()		<< std::endl;
-  std::cout << "timestamp "		<< module.getCreationTimestamp()	<< std::endl;
-  std::cout << "flags "			<< module.flags().print()		<< std::endl;
-  std::cout << "linkerVersion "		<< module.linkerVersion().getFloat()	<< std::endl;
-  std::cout << "entry point offset "	<< module.getEntryPointRva()		<< std::endl;
-  std::cout << "load address "		<< module.getLoadVa()			<< std::endl;
-  std::cout << "section alignment "	<< module.getSectionAlignment()		<< std::endl;
-  std::cout << "file alignment "	<< module.getFileAlignment()		<< std::endl;
-  std::cout << "OS version "		<< module.OSVersion().getFloat()	<< std::endl;
-  std::cout << "image version "		<< module.imageVersion().getFloat()	<< std::endl;
-  std::cout << "subsystem version "	<< module.subsystemVersion().getFloat()	<< std::endl;
-  std::cout << "subsystem "		<< module.printSubsystem()		<< std::endl;
-  std::cout << "DLL flags "		<< module.dllFlags().print()		<< std::endl;
-  std::cout << "getSizeOfStackReserve "	<< module.getSizeOfStackReserve()	<< std::endl;
-  std::cout << "getSizeOfStackCommit "	<< module.getSizeOfStackCommit()	<< std::endl;
-  std::cout << "getSizeOfHeapReserve "	<< module.getSizeOfHeapReserve()	<< std::endl;
-  std::cout << "getSizeOfHeapCommit "	<< module.getSizeOfHeapCommit()		<< std::endl;
-  std::cout << "loader flags "		<< module.loaderFlags().print()		<< std::endl;
+  std::cout << "CPU mode "		<< module.getProcessorMode()			<< std::endl;
+  std::cout << "timestamp "		<< module.getCreationTimestamp()		<< std::endl;
+  std::cout << "flags "			<< module.flags().print()			<< std::endl;
+  std::cout << "linkerVersion "		<< module.linkerVersion().getFloat()		<< std::endl;
+  std::cout << "entry point offset "	<< module.getEntryPoint<Addr::RVA, DWORD>()	<< std::endl;
+  std::cout << "load address "		<< module.getLoadVa()				<< std::endl;
+  std::cout << "section alignment "	<< module.getSectionAlignment()			<< std::endl;
+  std::cout << "file alignment "	<< module.getFileAlignment()			<< std::endl;
+  std::cout << "OS version "		<< module.OSVersion().getFloat()		<< std::endl;
+  std::cout << "image version "		<< module.imageVersion().getFloat()		<< std::endl;
+  std::cout << "subsystem version "	<< module.subsystemVersion().getFloat()		<< std::endl;
+  std::cout << "subsystem "		<< module.printSubsystem()			<< std::endl;
+  std::cout << "DLL flags "		<< module.dllFlags().print()			<< std::endl;
+  std::cout << "getSizeOfStackReserve "	<< module.getSizeOfStackReserve()		<< std::endl;
+  std::cout << "getSizeOfStackCommit "	<< module.getSizeOfStackCommit()		<< std::endl;
+  std::cout << "getSizeOfHeapReserve "	<< module.getSizeOfHeapReserve()		<< std::endl;
+  std::cout << "getSizeOfHeapCommit "	<< module.getSizeOfHeapCommit()			<< std::endl;
+  std::cout << "loader flags "		<< module.loaderFlags().print()			<< std::endl;
   std::cout << std::endl;
 
   std::cout << "Sections: " << std::hex;
@@ -66,8 +66,8 @@ int	main(int ac, char** av)
   if (imports)
     {
       std::cout << "Import table size : " << imports->get().size() << std::endl;
-      // for (auto& it : imports->get())
-	// std::cout << "[" << it.ordinal << "] " << it.name << "@" << it.dll << std::endl;
+      for (auto& it : imports->get())
+	std::cout << "[" << it.ordinal << "] " << it.name << "@" << it.dll << std::endl;
       std::cout << std::endl;
     }
   else
@@ -77,8 +77,8 @@ int	main(int ac, char** av)
   if (resources)
     {
       std::cout << "Resource table size : " << resources->get().size() << std::endl;
-      // for (auto& it : resources->get())
-	// std::cout << it.getAsciiName() << /*" " << it.getData() << */std::endl;
+      for (auto& it : resources->get())
+	std::cout << it.getAsciiName() << " " << it.getData() << std::endl;
       std::cout << std::endl;
     }
   else
@@ -88,15 +88,15 @@ int	main(int ac, char** av)
   if (relocs)
     {
       std::cout << "Relocation table size : " << relocs->get().size() << std::endl;
-      // for (auto& it : relocs->get())
-	// std::cout << it << std::endl;
+      for (auto& it : relocs->get())
+	std::cout << it << std::endl;
       std::cout << std::endl;
     }
   else
     std::cout << "No relocation table found" << std::endl << std::endl;
-  module.load();
+  // module.load();
 
-  std::cout << "The program is alive and will exit normally." << std::endl;
+  // std::cout << "The program is alive and will exit normally." << std::endl;
 
   return 0;
 }

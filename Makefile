@@ -11,6 +11,7 @@ endif
 LDFLAGS	=	-L$(UDIS86DIR)/lib -ludis86 -Wl,--image-base,0x8000000
 
 SRCS	=	main.cpp \
+		AddrAwareObject.cpp \
 		Module.cpp \
 		Module_loader.cpp \
 		Section.cpp \
