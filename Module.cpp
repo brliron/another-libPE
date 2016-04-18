@@ -192,18 +192,6 @@ Version<BYTE>	Module::linkerVersion()
   return Version<BYTE>(this->opHeader->MajorLinkerVersion, this->opHeader->MinorLinkerVersion);
 }
 
-/*
-DWORD	Module::getEntryPointRva() const
-{
-  return this->opHeader->AddressOfEntryPoint;
-}
-
-BYTE*	Module::getEntryPointFp()
-{
-  return rvaToFp<>(this->opHeader->AddressOfEntryPoint); // TODO: find in which section is that thing.
-}
-*/
-
 void	Module::setEntryPointRva(DWORD offset)
 {
   this->opHeader->AddressOfEntryPoint = offset;
