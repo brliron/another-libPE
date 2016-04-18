@@ -71,8 +71,8 @@ void	ImportTable::patch()
 	funcsTable = (DWORD*)(base + headers[i].FirstThunk);
       importAddressTable = (DWORD*)(base + headers[i].FirstThunk);
 
-      if (GetModuleHandle(name) == NULL)
-	LoadLibrary(name);
+      if (GetModuleHandleA(name) == NULL)
+	LoadLibraryA(name);
       for (int j = 0; funcsTable[j]; j++)
 	{
 	  const IMAGE_IMPORT_BY_NAME*	func;
@@ -93,9 +93,9 @@ void	ImportTable::patch()
 
 	  DWORD	funcAddrInMemory;
 	  if (funcName[0])
-	    funcAddrInMemory = (DWORD)GetProcAddress(GetModuleHandle(name), funcName);
+	    funcAddrInMemory = (DWORD)GetProcAddress(GetModuleHandleA(name), funcName);
 	  else
-	    funcAddrInMemory = (DWORD)GetProcAddress(GetModuleHandle(name), (char*)(DWORD)ordinal);
+	    funcAddrInMemory = (DWORD)GetProcAddress(GetModuleHandleA(name), (char*)(DWORD)ordinal);
 	  importAddressTable[j] = funcAddrInMemory;
 	}
     }

@@ -15,7 +15,7 @@ int		main(int ac, char** av)
       std::cout << "Usage : " << av[0] << " file" << std::endl;
       return 0;
     }
-  module = Module::alloc(av[1]);
+  module = Module::alloc(av[1]); // TODO: use unicode if the lib is compiled in unicode.
   if (module == nullptr)
     return 1;
 

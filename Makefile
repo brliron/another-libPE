@@ -4,9 +4,13 @@ NAME	=	another-libpe.dll
 NAME_EXE=	a.exe
 
 CXXFLAGS=	-Wall -Wextra -std=c++11 -I$(UDIS86DIR)/include
-DEBUG=1
+DEBUG=0
 ifeq ($(DEBUG), 1)
   CXXFLAGS	+=	-g
+endif
+UNICODE=0
+ifeq ($(UNICODE), 1)
+  CXXFLAGS	+=	-DUNICODE -D_UNICODE
 endif
 LDFLAGS	=	-L$(UDIS86DIR)/lib -ludis86 -shared
 EXE_LDFLAGS =	-L. -lanother-libpe -Wl,--image-base,0x8000000
