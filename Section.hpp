@@ -2,7 +2,7 @@
 # define SECTION_HPP_
 
 # include	<string>
-# include	<Windows.h>
+# include	<windows.h>
 # include	"Module.hpp"
 # include	"Flags.hpp"
 

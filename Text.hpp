@@ -13,7 +13,9 @@ public:
   Text(const Section& src);
   ~Text();
 
+#ifdef WITH_UDIS86
   const std::vector<std::string>&	disassemble();
+#endif /* WITH_UDIS86 */
 };
 
 #endif /* TEXT_HPP_ */

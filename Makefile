@@ -1,9 +1,13 @@
-UDIS86DIR =	./udis86/out
-
 NAME	=	another-libpe.dll
 NAME_EXE=	a.exe
 
-CXXFLAGS=	-Wall -Wextra -std=c++11 -I$(UDIS86DIR)/include
+CXXFLAGS=	-Wall -Wextra -std=c++11
+WITH_UDIS86=1
+ifeq ($(WITH_UDIS86), 1)
+  UDIS86DIR =	./udis86/out
+  CXXFLAGS  =	-DWITH_UDIS86 -I$(UDIS86DIR)/include
+  LDFLAGS   =	-L$(UDIS86DIR)/lib -ludis86 -shared
+endif
 DEBUG=0
 ifeq ($(DEBUG), 1)
   CXXFLAGS	+=	-g
@@ -12,7 +16,7 @@ UNICODE=0
 ifeq ($(UNICODE), 1)
   CXXFLAGS	+=	-DUNICODE -D_UNICODE
 endif
-LDFLAGS	=	-L$(UDIS86DIR)/lib -ludis86 -shared
+LDFLAGS 	+=	-shared
 EXE_LDFLAGS =	-L. -lanother-libpe -Wl,--image-base,0x8000000
 
 SRCS	=	AddrAwareObject.cpp \
@@ -28,10 +32,10 @@ SRCS	=	AddrAwareObject.cpp \
 OBJS	=	$(SRCS:.cpp=.o)
 
 $(NAME): $(OBJS)
-	g++ $(OBJS) -o $(NAME) $(LDFLAGS)
+	$(CXX) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 $(NAME_EXE): main.o
-	g++ main.o -o $(NAME_EXE) $(EXE_LDFLAGS)
+	$(CXX) main.o -o $(NAME_EXE) $(EXE_LDFLAGS)
 
 all: $(NAME) $(NAME_EXE)
 

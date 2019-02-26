@@ -1,7 +1,7 @@
 #ifndef ADDRAWAREOBJECT_HPP_
 # define ADDRAWAREOBJECT_HPP_
 
-# include	<Windows.h>
+# include	<windows.h>
 
 class	Module;
 class	Section;

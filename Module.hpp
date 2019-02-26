@@ -5,7 +5,7 @@
 # include	<map>
 # include	<array>
 # include	<vector>
-# include	<Windows.h>
+# include	<windows.h>
 # include	"AddrAwareObject.hpp"
 # include	"Version.hpp"
 # include	"Flags.hpp"

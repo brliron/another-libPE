@@ -1,4 +1,6 @@
-#include	"udis86.h"
+#ifdef WITH_UDIS86
+# include	"udis86.h"
+#endif /* WITH_UDIS86 */
 #include	"Module.hpp"
 #include	"Text.hpp"
 
@@ -10,6 +12,7 @@ Text::~Text()
 {}
 
 
+#ifdef WITH_UDIS86
 const std::vector<std::string>&	Text::disassemble()
 {
   if (this->code.size() > 0)
@@ -30,3 +33,4 @@ const std::vector<std::string>&	Text::disassemble()
 
   return this->code;
 }
+#endif /* WITH_UDIS86 */
