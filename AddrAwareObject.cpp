@@ -12,8 +12,10 @@ AddrAwareObject::AddrAwareObject(AddrAwareObject* ref, Section* section)
 
 
 template<>	void*	AddrAwareObject::_addr<Addr::FilePointer>(DWORD rva)	{ return (void*)this->_addr_FilePointer(rva); }
-template<>	void*	AddrAwareObject::_addr<Addr::RVA>(DWORD rva)		{ return (void*)rva; }
+template<>	void*	AddrAwareObject::_addr<Addr::RVA>(DWORD rva)		{ return (void*)(DWORD_PTR)rva; } // rva will be cast back to a dword later.
+#ifdef WITH_EXECUTE
 template<>	void*	AddrAwareObject::_addr<Addr::Load>(DWORD rva)		{ return this->_addr_Load(rva); }
+#endif /* WITH_EXECUTE */
 
 
 BYTE*	AddrAwareObject::_addr_FilePointer(DWORD rva)
@@ -29,6 +31,7 @@ BYTE*	AddrAwareObject::_addr_FilePointer(DWORD rva)
   return this->module->getData() + rva;
 }
 
+#ifdef WITH_EXECUTE
 void*	AddrAwareObject::_addr_Load(DWORD rva)
 {
   BYTE*	addr;
@@ -41,3 +44,4 @@ void*	AddrAwareObject::_addr_Load(DWORD rva)
     }
   return addr + rva;
 }
+#endif /* WITH_EXECUTE */

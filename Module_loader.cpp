@@ -3,7 +3,8 @@
 #include	"Section.hpp"
 #include	"ImportTable.hpp"
 
-void	Module::load()
+#ifdef WITH_EXECUTE
+void	Module::execute()
 {
   // Some debug info
   MEMORY_BASIC_INFORMATION	mbi;
@@ -49,3 +50,4 @@ void	Module::load()
   entry = (void(*)())(base + this->getEntryPoint<Addr::RVA, DWORD>());
   entry();
 }
+#endif /* WITH_EXECUTE */

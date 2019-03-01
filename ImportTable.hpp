@@ -24,7 +24,9 @@ public:
   ~ImportTable();
 
   const std::vector<Entry>&	get();
+#ifdef WITH_EXECUTE
   void				patch();
+#endif /* WITH_EXECUTE */
 };
 
 #endif /* !IMPORTTABLE_HPP_ */

@@ -1,5 +1,5 @@
 #include	<iostream>
-#include	"module.hpp"
+#include	"Module.hpp"
 #include	"ExportTable.hpp"
 #include	"ImportTable.hpp"
 #include	"ResourceTable.hpp"
@@ -23,7 +23,7 @@ int		main(int ac, char** av)
   std::cout << "timestamp "		<< module->getCreationTimestamp()		<< std::endl;
   std::cout << "flags "			<< module->flags().print()			<< std::endl;
   std::cout << "linkerVersion "		<< module->linkerVersion().getFloat()		<< std::endl;
-  std::cout << "entry point offset "	<< module->getEntryPoint<Addr::RVA, DWORD>()	<< std::endl;
+  std::cout << "entry point offset "	<< module->getEntryPoint<Addr::RVA, DWORD_PTR>()<< std::endl;
   std::cout << "load address "		<< module->getLoadVa()				<< std::endl;
   std::cout << "section alignment "	<< module->getSectionAlignment()		<< std::endl;
   std::cout << "file alignment "	<< module->getFileAlignment()			<< std::endl;

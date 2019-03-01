@@ -131,7 +131,7 @@ bool	Module::load(LPCTSTR filename)
 
   IMAGE_DOS_HEADER*	dosHeader;
   dosHeader = (IMAGE_DOS_HEADER*)this->data;
-  header = addr<Addr::FilePointer, IMAGE_NT_HEADERS*>(dosHeader->e_lfanew);
+  header = addr<Addr::FilePointer, IMAGE_NT_HEADERS32*>(dosHeader->e_lfanew);
 
   if (memcmp(&header->Signature, "PE\0\0", 4) != 0)
     {
@@ -197,14 +197,14 @@ void	Module::setEntryPointRva(DWORD offset)
   this->opHeader->AddressOfEntryPoint = offset;
 }
 
-void*	Module::getLoadVa() const
+DWORD	Module::getLoadVa() const
 {
-  return (void*)this->opHeader->ImageBase;
+  return this->opHeader->ImageBase;
 }
 
-void	Module::setLoadVa(void* address)
+void	Module::setLoadVa(DWORD address)
 {
-  this->opHeader->ImageBase = (DWORD)address;
+  this->opHeader->ImageBase = address;
 }
 
 DWORD	Module::getSectionAlignment() const

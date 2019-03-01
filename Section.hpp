@@ -65,7 +65,9 @@ public:
     };
   Flags<DWORD>	flags();
 
+#ifdef WITH_EXECUTE
   void		load();
+#endif /* WITH_EXECUTE */
 };
 
 #endif /* !SECTION_HPP_ */

@@ -53,6 +53,7 @@ const std::vector<ImportTable::Entry>&	ImportTable::get()
   return this->table;
 }
 
+#ifdef WITH_EXECUTE
 void	ImportTable::patch()
 {
   const IMAGE_IMPORT_DESCRIPTOR*	headers;
@@ -100,3 +101,4 @@ void	ImportTable::patch()
 	}
     }
 }
+#endif /* WITH_EXECUTE */

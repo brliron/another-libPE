@@ -100,6 +100,7 @@ Flags<DWORD>	Section::flags()
 }
 
 
+#ifdef WITH_EXECUTE
 void	Section::load()
 {
   BYTE*	base;
@@ -127,3 +128,4 @@ void	Section::load()
   std::cout << std::hex << "[LOG] section " << this->getName() << "; Protection: " << protection << std::endl;
   VirtualProtect(base, this->getSize(), PAGE_READWRITE, &dummy);
 }
+#endif /* WITH_EXECUTE */

@@ -36,14 +36,14 @@ class		ResourceTable;
 class		RelocTable;
 class		Text;
 
-class		Module  :public AddrAwareObject
+class		Module : public AddrAwareObject
 {
 private:
   HANDLE				hFile;
   HANDLE				hFileMapping;
   BYTE*					data;
-  IMAGE_NT_HEADERS*			header;
-  IMAGE_OPTIONAL_HEADER*		opHeader;
+  IMAGE_NT_HEADERS32*			header;
+  IMAGE_OPTIONAL_HEADER32*		opHeader;
   std::array<Section*, 16>		singleSections;
   std::map<std::string, Section*>	sections;
 
@@ -105,8 +105,8 @@ public:
   void		setEntryPointRva(DWORD offset);
   // Note: ignoring BaseOfCode and BaseOfData (TODO)
   // Return the address where the Windows loader will try to map the executable.
-  void*		getLoadVa() const;
-  void		setLoadVa(void* address);
+  DWORD		getLoadVa() const;
+  void		setLoadVa(DWORD address);
   // TODO: make a setter for these functions.
   DWORD		getSectionAlignment() const;
   DWORD		getFileAlignment() const;
@@ -184,7 +184,14 @@ public:
   const std::vector<Text*>	getCodeSections();
   const std::vector<Section*>	getDataSections(); // Useless for now (returns an empty array)
 
-  void			load(); // TODO: rename (the function to load a file has the same name).
+  // This function loads the PE file in memory as an executable, loads its dependencies,
+  // and execute it. It isn't complete - for now, it doesn't load the dependencies,
+  // and the GetModuleHandle (and every call using this function) may fail (and
+  // GetModuleHandle(NULL) WILL fail).
+  // Also, this function is only available on 32-bits builds.
+#ifdef WITH_EXECUTE
+  void			execute();
+#endif /* WITH_EXECUTE */
 };
 
 #endif /* !MODULE_HPP_ */
