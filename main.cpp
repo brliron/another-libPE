@@ -23,7 +23,7 @@ int		main(int ac, char** av)
   std::cout << "timestamp "		<< module->getCreationTimestamp()		<< std::endl;
   std::cout << "flags "			<< module->flags().print()			<< std::endl;
   std::cout << "linkerVersion "		<< module->linkerVersion().getFloat()		<< std::endl;
-  std::cout << "entry point offset "	<< module->getEntryPoint<Addr::RVA, DWORD_PTR>()<< std::endl;
+  std::cout << "entry point offset "	<< module->getEntryPoint().inFile<void*>()	<< std::endl;
   std::cout << "load address "		<< module->getLoadVa()				<< std::endl;
   std::cout << "section alignment "	<< module->getSectionAlignment()		<< std::endl;
   std::cout << "file alignment "	<< module->getFileAlignment()			<< std::endl;
@@ -45,17 +45,18 @@ int		main(int ac, char** av)
   std::cout << std::dec << std::endl << std::endl;
 
   std::cout << "Nb of code sections " << module->getCodeSections().size() << std::endl;
-  // for (Section* section : module->getCodeSections())
-    // std::cout << "name " << section->getName() << " flags " << section->flags().print() << std::endl;
+  for (Section* section : module->getCodeSections())
+    std::cout << "name " << section->getName() << " flags " << section->flags().print() << std::endl;
   /*
   for (const std::string& line : module->getCodeSections[0].disassemble())
     std::cout << line << std::endl;
   */
   std::cout << std::endl;
 
-  ExportTable*	exports = module->getExportTable(); // TODO: test
+  ExportTable*	exports = module->getExportTable();
   if (exports)
     {
+      std::cout << "Exported module name : " << exports->getExportedName() << std::endl;
       std::cout << "Export table size : " << exports->get().size() << std::endl;
       for (auto& it : exports->get())
 	std::cout << "[" << it.ordinal << "] " << it.name << " " << it.offset << std::endl;
@@ -80,7 +81,7 @@ int		main(int ac, char** av)
     {
       std::cout << "Resource table size : " << resources->get().size() << std::endl;
       for (auto& it : resources->get())
-	std::cout << it.getAsciiName() << " " << it.getData() << std::endl;
+	std::cout << it.getAsciiName() << " " << (void*)it.getData() << std::endl;
       std::cout << std::endl;
     }
   else
@@ -90,8 +91,8 @@ int		main(int ac, char** av)
   if (relocs)
     {
       std::cout << "Relocation table size : " << relocs->get().size() << std::endl;
-      for (auto& it : relocs->get())
-	std::cout << it << std::endl;
+      // for (auto& it : relocs->get())
+	// std::cout << it << std::endl;
       std::cout << std::endl;
     }
   else

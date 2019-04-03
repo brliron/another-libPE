@@ -18,8 +18,9 @@ const std::vector<DWORD>&	RelocTable::get()
   if (this->table.size() != 0)
     return this->table;
 
-  const BYTE*	ptr = this->data();
-  while (ptr < this->data() + this->getSize())
+  const BYTE*	ptr = this->getData().inFile<const BYTE*>();
+  const BYTE*	end = ptr + this->getSize();
+  while (ptr < end)
     {
       const IMAGE_BASE_RELOCATION*	reloc = (const IMAGE_BASE_RELOCATION*)ptr;
       if (reloc->SizeOfBlock == 0)

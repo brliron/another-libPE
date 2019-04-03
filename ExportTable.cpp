@@ -13,27 +13,40 @@ ExportTable::~ExportTable()
 {}
 
 
+std::string ExportTable::getExportedName()
+{
+  const IMAGE_EXPORT_DIRECTORY*	directory = this->getData().inFile<const IMAGE_EXPORT_DIRECTORY*>();
+  return Pointer::fromRva(this, directory->Name).inFile<const char*>();
+}
+
 const std::vector<ExportTable::Entry>&	ExportTable::get()
 {
   if (this->table.size() != 0)
     return this->table;
 
-  const IMAGE_EXPORT_DIRECTORY*	directory;
+  const IMAGE_EXPORT_DIRECTORY*	directory = this->getData().inFile<const IMAGE_EXPORT_DIRECTORY*>();
+  DWORD *AddressOfFunctions        = Pointer::fromRva(this, directory->AddressOfFunctions).inFile<DWORD*>();
+  DWORD *AddressOfNames            = Pointer::fromRva(this, directory->AddressOfNames).inFile<DWORD*>();
+  WORD  *AddressOfNameOrdinals     = Pointer::fromRva(this, directory->AddressOfNameOrdinals).inFile<WORD*>();
 
-  directory = (const IMAGE_EXPORT_DIRECTORY*)this->data();
   for (unsigned int i = 0; i < directory->NumberOfFunctions; i++)
     {
       DWORD		offset;
       const char*	name;
       DWORD		ordinal;
 
-      offset = addr<Addr::FilePointer, DWORD*>(directory->AddressOfFunctions)[i];
+      offset = AddressOfFunctions[i];
       if (i < directory->NumberOfNames)
-	name = addr<Addr::FilePointer, const char*>(addr<Addr::FilePointer, DWORD*>(directory->AddressOfNames)[i]);
+	name = Pointer::fromRva(this, AddressOfNames[i]).inFile<const char*>();
       else
 	name = NULL;
-      ordinal = directory->Base + addr<Addr::FilePointer, WORD*>(directory->AddressOfNameOrdinals)[i];
-      this->table.push_back(ExportTable::Entry(addr<Addr::FilePointer>(offset), offset, name, ordinal));
+      ordinal = directory->Base + AddressOfNameOrdinals[i];
+      this->table.push_back(
+	ExportTable::Entry(
+	  Pointer::fromRva(this, offset).inFile<BYTE*>(),
+	  offset, name, ordinal
+	)
+      );
     }
   return this->table;
 }

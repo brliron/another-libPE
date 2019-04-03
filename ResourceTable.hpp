@@ -11,7 +11,7 @@ public:
   class	Entry
   {
   private:
-    BYTE*		address;
+    const BYTE*		address;
     DWORD		size;
     DWORD		codePage; // 1252 for example.
     DWORD		reserved; // I wonder what is inside this.
@@ -20,7 +20,7 @@ public:
   public:
     DWORD		offset;
 
-    Entry(LPCWSTR name, DWORD offset, BYTE* address, DWORD size, DWORD codePage, DWORD reserved)
+    Entry(LPCWSTR name, DWORD offset, const BYTE* address, DWORD size, DWORD codePage, DWORD reserved)
       : address(address), size(size), codePage(codePage), reserved(reserved), name(name), offset(offset)
     {
       for (WCHAR c : this->name)

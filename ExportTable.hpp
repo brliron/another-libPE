@@ -28,6 +28,9 @@ public:
   ExportTable(const ExportTable& src);
   ~ExportTable();
 
+  // Return the name of this module declared in the .def file
+  std::string			getExportedName();
+  // Return a list of function exported by this module
   const std::vector<Entry>&	get();
 };
 

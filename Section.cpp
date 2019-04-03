@@ -36,7 +36,7 @@ static const std::map<int, const char*>	flagsMap =
 
 
 Section::Section(Module& module, IMAGE_SECTION_HEADER& header)
-  : AddrAwareObject(&module, this), module(module), header(header)
+  : module(module), header(header)
 {
   char	name[9];
 
@@ -46,11 +46,16 @@ Section::Section(Module& module, IMAGE_SECTION_HEADER& header)
 }
 
 Section::Section(const Section& src)
-  : AddrAwareObject(&module, this), module(src.module), header(src.header), name(src.name)
+  : module(src.module), header(src.header), name(src.name)
 {}
 
 Section::~Section()
 {}
+
+const Module&	Section::getModule() const
+{
+  return this->module;
+}
 
 void	Section::setParentSection(const Section* parent)
 {
@@ -89,9 +94,9 @@ DWORD	Section::getRoundedSize() const
   return this->header.SizeOfRawData;
 }
 
-BYTE*	Section::data()
+Pointer	Section::getData() const
 {
-  return this->addr<Addr::FilePointer>(this->getLoadRva());
+  return Pointer::fromSection(this, 0);
 }
 
 Flags<DWORD>	Section::flags()

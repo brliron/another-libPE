@@ -28,9 +28,9 @@ endif
 LDFLAGS 	+=	-shared
 EXE_LDFLAGS =	-L. -lanother-libpe -Wl,--image-base,0x8000000
 
-SRCS	=	AddrAwareObject.cpp \
-		Module.cpp \
+SRCS	=	Module.cpp \
 		Module_loader.cpp \
+		Pointer.cpp \
 		Section.cpp \
 		ExportTable.cpp \
 		ImportTable.cpp \

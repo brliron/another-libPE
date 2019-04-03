@@ -20,15 +20,15 @@ const std::vector<ImportTable::Entry>&	ImportTable::get()
 
   const IMAGE_IMPORT_DESCRIPTOR*	headers;
 
-  headers = (const IMAGE_IMPORT_DESCRIPTOR*)this->data();
+  headers = this->getData().inFile<const IMAGE_IMPORT_DESCRIPTOR*>();
   for (int i = 0; headers[i].FirstThunk != 0; i++)
     {
-      const char*	name = addr<Addr::FilePointer, const char*>(headers[i].Name);
+      const char*	name = Pointer::fromRva(this, headers[i].Name).inFile<const char*>();
       const DWORD*	funcsTable;
       if (headers[i].Characteristics != 0)
-	funcsTable = addr<Addr::FilePointer, const DWORD*>(headers[i].Characteristics);
+	funcsTable = Pointer::fromRva(this, headers[i].Characteristics).inFile<const DWORD*>();
       else
-	funcsTable = addr<Addr::FilePointer, const DWORD*>(headers[i].FirstThunk);
+	funcsTable = Pointer::fromRva(this, headers[i].FirstThunk).inFile<const DWORD*>();
       for (int j = 0; funcsTable[j]; j++)
 	{
 	  const IMAGE_IMPORT_BY_NAME*	func;
@@ -42,7 +42,7 @@ const std::vector<ImportTable::Entry>&	ImportTable::get()
 	    }
 	  else // Import by name
 	    {
-	      func = addr<Addr::FilePointer, const IMAGE_IMPORT_BY_NAME*>(funcsTable[j]);
+	      func = Pointer::fromRva(this, funcsTable[j]).inFile<const IMAGE_IMPORT_BY_NAME*>();
 	      ordinal = func->Hint;
 	      funcName = (const char*)&func->Name;
 	    }

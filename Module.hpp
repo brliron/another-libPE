@@ -6,7 +6,7 @@
 # include	<array>
 # include	<vector>
 # include	<windows.h>
-# include	"AddrAwareObject.hpp"
+# include	"Pointer.hpp"
 # include	"Version.hpp"
 # include	"Flags.hpp"
 
@@ -36,7 +36,7 @@ class		ResourceTable;
 class		RelocTable;
 class		Text;
 
-class		Module : public AddrAwareObject
+class		Module
 {
 private:
   HANDLE				hFile;
@@ -57,10 +57,7 @@ public:
 
   static Module*	alloc(LPCTSTR filename);
   bool			load(LPCTSTR filename);
-  BYTE*			getData()
-  {
-    return this->data;
-  }
+  BYTE*			getData() const { return this->data; }
 
   enum	ProcessorMode
     {
@@ -101,7 +98,7 @@ public:
   Version<BYTE>	linkerVersion();
   // Note: the SizeOfSomething fields are calculated from the sections fields. (TODO)
   // Return the entry point (the address where the execution begins).
-  template<Addr A, typename T = BYTE*>	T	getEntryPoint() {return addr<A, T>(this->opHeader->AddressOfEntryPoint); }
+  Pointer	getEntryPoint() { return Pointer::fromRva(this, this->opHeader->AddressOfEntryPoint); }
   void		setEntryPointRva(DWORD offset);
   // Note: ignoring BaseOfCode and BaseOfData (TODO)
   // Return the address where the Windows loader will try to map the executable.

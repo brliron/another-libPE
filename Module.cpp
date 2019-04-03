@@ -91,7 +91,7 @@ std::string	Module::_printFlags(unsigned int flags, const std::map<int, const ch
 
 
 Module::Module()
-  : AddrAwareObject(this), hFile(nullptr), hFileMapping(nullptr), data(nullptr)
+  : hFile(nullptr), hFileMapping(nullptr), data(nullptr)
 {}
 
 Module::~Module()
@@ -131,7 +131,7 @@ bool	Module::load(LPCTSTR filename)
 
   IMAGE_DOS_HEADER*	dosHeader;
   dosHeader = (IMAGE_DOS_HEADER*)this->data;
-  header = addr<Addr::FilePointer, IMAGE_NT_HEADERS32*>(dosHeader->e_lfanew);
+  this->header = Pointer::fromModule(this, dosHeader->e_lfanew).inFile<IMAGE_NT_HEADERS32*>();
 
   if (memcmp(&header->Signature, "PE\0\0", 4) != 0)
     {

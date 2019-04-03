@@ -19,23 +19,29 @@ ResourceTable::~ResourceTable()
 
 void	ResourceTable::addEntry(const IMAGE_RESOURCE_DIRECTORY_ENTRY& entry, LPCWSTR dirName)
 {
-  WCHAR	name[MAX_PATH]; // TODO: dynamic max path handling.
+  WCHAR		name[MAX_PATH]; // TODO: dynamic max path handling.
+  const BYTE	*data = this->getData().inFile<const BYTE*>();
 
   if (entry.Name & 0x80000000)
     {
-      const IMAGE_RESOURCE_DIR_STRING_U* nameStruct = (const IMAGE_RESOURCE_DIR_STRING_U*)(this->data() + (entry.Name & 0x7FFFFFFF));
+      const IMAGE_RESOURCE_DIR_STRING_U* nameStruct = (const IMAGE_RESOURCE_DIR_STRING_U*)(data + (entry.Name & 0x7FFFFFFF));
       wcscpy(name, dirName);
       wcscat(name, L"/");
       wcsncat(name, nameStruct->NameString, nameStruct->Length);
     }
   else
     SWPRINTF(name, MAX_PATH, L"%s/#%d", dirName, entry.Name);
+
   if (entry.OffsetToData & 0x80000000)
-    this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)(this->data() + (entry.OffsetToData & 0x7FFFFFFF)), name);
+    {
+      const IMAGE_RESOURCE_DIRECTORY *subdirectory = (const IMAGE_RESOURCE_DIRECTORY*)(data + (entry.OffsetToData & 0x7FFFFFFF));
+      this->addDirectory(subdirectory, name);
+    }
   else
     {
-      const IMAGE_RESOURCE_DATA_ENTRY*	resEntry = (const IMAGE_RESOURCE_DATA_ENTRY*)(this->data() + entry.OffsetToData);
-      this->table.push_back(Entry(name, entry.OffsetToData, addr<Addr::FilePointer>(resEntry->OffsetToData), resEntry->Size, resEntry->CodePage, resEntry->Reserved));
+      const IMAGE_RESOURCE_DATA_ENTRY *resEntry = (const IMAGE_RESOURCE_DATA_ENTRY*)(data + entry.OffsetToData);
+      const BYTE *resData = Pointer::fromSection(this, resEntry->OffsetToData).inFile<const BYTE*>();
+      this->table.push_back(Entry(name, entry.OffsetToData, resData, resEntry->Size, resEntry->CodePage, resEntry->Reserved));
     }
 }
 
@@ -53,6 +59,6 @@ const std::vector<ResourceTable::Entry>&	ResourceTable::get()
   if (this->table.size() != 0)
     return this->table;
 
-  this->addDirectory((const IMAGE_RESOURCE_DIRECTORY*)this->data(), L"");
+  this->addDirectory(this->getData().inFile<const IMAGE_RESOURCE_DIRECTORY*>(), L"");
   return this->table;
 }
