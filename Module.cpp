@@ -131,7 +131,7 @@ bool	Module::load(LPCTSTR filename)
 
   IMAGE_DOS_HEADER*	dosHeader;
   dosHeader = (IMAGE_DOS_HEADER*)this->data;
-  this->header = Pointer::fromModule(this, dosHeader->e_lfanew).inFile<IMAGE_NT_HEADERS32*>();
+  this->header = Pointer::fromModule(this, dosHeader->e_lfanew);
 
   if (memcmp(&header->Signature, "PE\0\0", 4) != 0)
     {

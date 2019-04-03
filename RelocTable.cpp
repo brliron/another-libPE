@@ -18,7 +18,7 @@ const std::vector<DWORD>&	RelocTable::get()
   if (this->table.size() != 0)
     return this->table;
 
-  const BYTE*	ptr = this->getData().inFile<const BYTE*>();
+  const BYTE*	ptr = this->getData();
   const BYTE*	end = ptr + this->getSize();
   while (ptr < end)
     {

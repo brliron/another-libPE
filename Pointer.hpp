@@ -40,9 +40,12 @@ public:
   static Pointer fromRva(const Section *section, DWORD rva);
 
   // Return a pointer to the pointed object in the file
-  template<typename T>	T inFile() const
-  {
+  template<typename T>	T inFile() const {
     return static_cast<T>(this->_inFile());
+  }
+  // Auto-cast
+  template<typename T> operator T() {
+    return this->inFile<T>();
   }
 #ifdef WITH_EXECUTABLE
   // Return a pointer to the pointed object in the loaded image.
